@@ -1,9 +1,23 @@
 import { useState } from 'react'
 
-const Display = props => {
-  console.log(props.value)
+const Display = (props) => {
   return (
     <div>Has {props.value} votes</div>
+  )
+}
+
+const MostVotes = (props) => {
+  let maxValue = indexOfMaxValue(props.votes)
+  if (maxValue === -1) {
+    return (
+      <div>No votes yet.</div>
+    )
+  }
+  return (
+    <div>
+      {props.anecdotes[maxValue]}<br />
+      Has {props.votes[maxValue]} votes.
+    </div>
   )
 }
 
@@ -19,10 +33,28 @@ function getRandomInt(max) {
 }
 
 function newTable(selected, votes) {
-  const copy = votes
+  const copy = [...votes]
   copy[selected] += 1
-  console.log(copy)
   return copy
+}
+
+function indexOfMaxValue(votes) {
+
+  let max = votes[0];
+  let maxIndex = 0;
+
+  for (var i = 1; i < votes.length; i++) {
+      if (votes[i] > max) {
+          maxIndex = i;
+          max = votes[i];
+      }
+  }
+
+  if (votes[maxIndex] === 0) {
+    return -1
+  }
+
+  return maxIndex;
 }
 
 const App = () => {
@@ -42,10 +74,13 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}<br />
       <Display value={votes[selected]} />
       <Button handleClick={() => setVotes(newTable(selected, votes))} text='vote' />
       <Button handleClick={() => setSelected(getRandomInt(anecdotes.length))} text='next anecdote' />
+      <h1>Anecdote with most votes</h1>
+      <MostVotes votes={votes} anecdotes={anecdotes} />
     </div>
   )
 }
