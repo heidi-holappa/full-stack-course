@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
 
-async function FetchWeather(setWeather, capital) {
+function FetchWeather(setWeather, capital) {
     const api_key = process.env.REACT_APP_API_KEY
     useEffect(() => {
         const weatherUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${capital}&units=metric&appid=${api_key}`
