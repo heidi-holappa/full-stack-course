@@ -58,11 +58,11 @@ const App = () => {
   const [searchTerm, setNewSearch] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-          setPersons(response.data)
-      })
+    personService
+      .getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })
   }
   )
 
@@ -75,19 +75,24 @@ const App = () => {
 
     const found = persons.some(person => person.name === newName)
     if (!found) {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      personService
+        .create(personObject)
+          .then(returnedPerson => {
+            setPersons(persons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
     } else {
-      const message = `${newName} is already added to phonebook`
-      alert(message)
+      if (window.confirm(`${personObject.name} is already added to phonebook, replace the old number with this new one?`)) {
+        const person = persons.find(p => p.name === newName)
+        const updatedPerson = {...person, number: newNumber}
+        personService
+          .update(updatedPerson.id, updatedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== updatedPerson.id ? person: returnedPerson))
+          })
+      }
     }
-
-    axios
-    .post('http://localhost:3001/persons', personObject)
-    .then(response => {
-      console.log(response)
-    })
   }
 
   const handleNameChange = (event) => {

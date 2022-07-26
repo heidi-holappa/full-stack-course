@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "040-123456",
+      "number": "012-1233123",
       "id": 1
     },
     {
@@ -22,13 +22,8 @@
     },
     {
       "name": "Putte Puttonen",
-      "number": "050-1234567",
+      "number": "050-4212345",
       "id": 5
-    },
-    {
-      "name": "Pelle Hermanni",
-      "number": "040-1234321",
-      "id": 6
     }
   ]
 }
