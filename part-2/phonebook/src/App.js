@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Person from './components/Person'
+import personService from './services/persons'
 
 
 const Filter = ({ searchTerm, handleSearchChange }) => {
@@ -81,6 +82,12 @@ const App = () => {
       const message = `${newName} is already added to phonebook`
       alert(message)
     }
+
+    axios
+    .post('http://localhost:3001/persons', personObject)
+    .then(response => {
+      console.log(response)
+    })
   }
 
   const handleNameChange = (event) => {
