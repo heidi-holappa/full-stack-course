@@ -1,63 +1,21 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
-import Person from './components/Person'
 import personService from './services/persons'
+import Notification from './components/Notification'
+import PersonForm from './components/PersonForm'
+import Filter from './components/Filter'
+import Numbers from './components/Numbers'
+import ErrorNotification from './components/ErrorNotification'
 
-
-const Filter = ({ searchTerm, handleSearchChange }) => {
-  return (
-    <div>
-      filter shown with 
-      <input 
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
-    </div>
-  )
-}
-
-const PersonForm = (props) => {
-  return (
-    <form onSubmit={props.addName}>
-    <div>
-      name: 
-      <input 
-        value={props.newName} 
-        onChange={props.handleNameChange}
-      />
-    </div>
-    <div>
-      number: 
-      <input 
-        value={props.newNumber}
-        onChange={props.handleNumberChange}
-      />
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-  )
-}
-
-const Numbers = ({ persons, searchTerm }) => {
-  const result = persons
-    .filter(function(person){
-      return person.name.toLowerCase().includes(searchTerm)
-    })
-    .map(person =>
-    <Person key={person.name} person={person} />
-    )
-  return (result)
-}
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchTerm, setNewSearch] = useState('')
+  const [statusMessage, setStatusMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
-  useEffect(() => {
+  useEffect(() => { 
     personService
       .getAll()
         .then(initialPersons => {
@@ -72,7 +30,6 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-
     const found = persons.some(person => person.name === newName)
     if (!found) {
       personService
@@ -82,6 +39,12 @@ const App = () => {
             setNewName('')
             setNewNumber('')
           })
+      setStatusMessage(
+        `Added ${personObject.name}`
+      )
+      setTimeout(() => {
+        setStatusMessage(null)
+      }, 5000)
     } else {
       if (window.confirm(`${personObject.name} is already added to phonebook, replace the old number with this new one?`)) {
         const person = persons.find(p => p.name === newName)
@@ -91,7 +54,34 @@ const App = () => {
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== updatedPerson.id ? person: returnedPerson))
           })
+          .catch(error => {
+            setErrorMessage(
+              `Information of ${updatedPerson.name} has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
+        setStatusMessage(
+          `Updated phonenumber for ${personObject.name}`
+        )
+        setTimeout(() => {
+          setStatusMessage(null)
+        }, 5000)
       }
+    }
+  }
+
+  const deleteNumber = (person) => {
+    if (window.confirm(`Delete ${person.name}`)) {
+      personService
+      .deletePerson(person.id)
+      setStatusMessage(
+        `Deleted phonenumber for ${person.name}`
+      )
+      setTimeout(() => {
+        setStatusMessage(null)
+      }, 5000)
     }
   }
 
@@ -110,6 +100,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={statusMessage} />
+      <ErrorNotification message={errorMessage} />
       <Filter 
         searchTerm={searchTerm}
         handleSearchChange={handleSearchChange}
@@ -128,6 +120,7 @@ const App = () => {
       <Numbers 
         persons={persons} 
         searchTerm={searchTerm}
+        deleteNumber={deleteNumber}
       />
 
     </div>
