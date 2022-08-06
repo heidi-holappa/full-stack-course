@@ -1,7 +1,6 @@
 import Person from "./Person"
 
 const Numbers = ({ persons, searchTerm, deleteNumber }) => {
-
     const result = persons
       .filter(function(person){
         return person.name.toLowerCase().includes(searchTerm.toLowerCase())

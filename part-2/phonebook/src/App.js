@@ -38,13 +38,21 @@ const App = () => {
             setPersons(persons.concat(returnedPerson))
             setNewName('')
             setNewNumber('')
+            setStatusMessage(
+              `Added ${personObject.name}`
+            )
+            setTimeout(() => {
+              setStatusMessage(null)
+            }, 5000)
           })
-      setStatusMessage(
-        `Added ${personObject.name}`
-      )
-      setTimeout(() => {
-        setStatusMessage(null)
-      }, 5000)
+          .catch(error => {
+            setErrorMessage(
+              `${error.response.data.error}`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
     } else {
       if (window.confirm(`${personObject.name} is already added to phonebook, replace the old number with this new one?`)) {
         const person = persons.find(p => p.name === newName)
@@ -53,21 +61,21 @@ const App = () => {
           .update(updatedPerson.id, updatedPerson)
           .then(returnedPerson => {
             setPersons(persons.map(person => person.id !== updatedPerson.id ? person: returnedPerson))
+            setStatusMessage(
+              `Updated phonenumber for ${personObject.name}`
+            )
+            setTimeout(() => {
+              setStatusMessage(null)
+            }, 5000)
           })
           .catch(error => {
             setErrorMessage(
-              `Information of ${updatedPerson.name} has already been removed from server`
+              `${error.response.data.error}`
             )
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
           })
-        setStatusMessage(
-          `Updated phonenumber for ${personObject.name}`
-        )
-        setTimeout(() => {
-          setStatusMessage(null)
-        }, 5000)
       }
     }
   }
