@@ -106,7 +106,7 @@ describe('author with most likes', () => {
     ]
     expect(result).toEqual(comparison)
   })
-  
+
   test('when a list has no entries, return 0', () => {
     const result = listHelper.mostLikes(emptyList)
     expect(result).toBe(0)
