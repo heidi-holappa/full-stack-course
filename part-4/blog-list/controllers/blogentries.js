@@ -1,17 +1,19 @@
 const blogentryRouter = require('express').Router()
-const { response } = require('../app')
+/* const { response } = require('../app') */
 const Blogentry = require('../models/blogentry')
-const User = require('../models/user')
+/* const User = require('../models/user') */
+/* const jwt = require('jsonwebtoken') */
+const { userExtractor } = require('../utils/middleware')
 
 blogentryRouter.get('/', async (request, response) => {
-  const blogs = await Blogentry.find({})
+  const blogs = await Blogentry
+    .find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
-blogentryRouter.post('/', async (request, response) => {
+blogentryRouter.post('/', userExtractor, async (request, response) => {
   const body = request.body
-
-  const user = await User.findById(body.userId)
+  const user = request.user
 
   const blog = new Blogentry({
     title: body.title,
@@ -29,7 +31,11 @@ blogentryRouter.post('/', async (request, response) => {
 
 })
 
-blogentryRouter.delete('/:id', async (request, response) => {
+blogentryRouter.delete('/:id', userExtractor, async (request, response) => {
+  const blogToBeRemoved = await Blogentry.findById(request.params.id)
+  if (blogToBeRemoved.user.toString() !== request.user.id.toString()) {
+    return response.status(401).json({ error: 'Can not delete post. Token missing or invalid. User-id mismatch.' })
+  }
   await Blogentry.findByIdAndRemove(request.params.id)
   response.status(204).end()
 })

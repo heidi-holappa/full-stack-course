@@ -1,19 +1,59 @@
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+
 const Blog = require('../models/blogentry')
+const User = require('../models/user')
+
 const helper = require('./test_helper')
 
 const api = supertest(app)
 
+let authToken = null
+let users = null
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('salasana', 10)
+  const user = new User({ username: 'potato', passwordHash })
+
+  await user.save()
+  //login
+  const login = await api
+    .post('/api/login')
+    .send({ username: 'potato', password: 'salasana' })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  authToken = `bearer ${login.body.token}`
+  users = await helper.usersInDb()
+  const userid = users[0].id
+  const initialBlogentries = [
+    {
+      title: 'Bad luck follows me around',
+      author: 'Kalle Anka',
+      url: 'https://www.kalle-anka.kvaak/bad-luck',
+      likes: 0,
+      user: userid
+    },
+    {
+      title: 'No such thing as luck',
+      author: 'Alexander Lukas',
+      url: 'https://www.lycksam-lukas.kvaak/no-such-thing',
+      likes: 0,
+      user: userid
+    }
+  ]
+  await Blog.insertMany(initialBlogentries)
+  const blogs = await helper.blogsInDb()
+  console.log('initial blogs', blogs)
+})
 
 
 describe('when some blogs are initially saved', () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogentries)
-  })
-
 
   test('blogs are returned as json', async () => {
     await api
@@ -67,12 +107,14 @@ describe('when some blogs are initially saved', () => {
   })
 
   describe('deleting a blogentry', () => {
+
     test('deleting a blogentry reduces numbers of blogs by one', async () => {
       const entries = await helper.blogsInDb()
       const id = entries[0].id
 
       await api
         .delete(`/api/blogs/${id}`)
+        .set('Authorization', authToken)
         .expect(204)
 
       const response = await helper.blogsInDb()
@@ -85,6 +127,7 @@ describe('when some blogs are initially saved', () => {
 
       await api
         .delete(`/api/blogs/${id}`)
+        .set('Authorization', authToken)
         .expect(204)
 
       const response = await api.get('/api/blogs')
@@ -95,6 +138,8 @@ describe('when some blogs are initially saved', () => {
   })
 
   describe('adding a new blogentry', () => {
+
+
     test('a valid blogentry can be added ', async () => {
       const newBlogentry = {
         title: 'Computers are essential for smart business',
@@ -105,6 +150,7 @@ describe('when some blogs are initially saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', authToken)
         .send(newBlogentry)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -128,6 +174,7 @@ describe('when some blogs are initially saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', authToken)
         .send(newBlogentry)
         .expect(400)
 
@@ -143,32 +190,34 @@ describe('when some blogs are initially saved', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', authToken)
         .send(newBlogentry)
         .expect(400)
 
       const blogsAtEnd = await helper.blogsInDb()
       expect(blogsAtEnd).toHaveLength(helper.initialBlogentries.length)
     })
-  })
 
-  test('if value for likes is not given, likes are set to zero', async () => {
-    await Blog.deleteMany({})
+    test('if value for likes is not given, likes are set to zero', async () => {
+      await Blog.deleteMany({})
 
-    const newBlogentry = {
-      title: 'No likes to be given',
-      author: 'Unliked',
-      url: 'https://www.unliked.org',
-    }
+      const newBlogentry = {
+        title: 'No likes to be given',
+        author: 'Unliked',
+        url: 'https://www.unliked.org',
+      }
 
-    await api
-      .post('/api/blogs')
-      .send(newBlogentry)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', authToken)
+        .send(newBlogentry)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-    const response = await helper.blogsInDb()
-    expect(response[0].likes).toBe(0)
+      const response = await helper.blogsInDb()
+      expect(response[0].likes).toBe(0)
 
+    })
   })
 
 })

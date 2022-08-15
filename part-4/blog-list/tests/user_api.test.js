@@ -13,8 +13,8 @@ describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
 
-    const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
+    const passwordHash = await bcrypt.hash('salasana', 10)
+    const user = new User({ username: 'potato', passwordHash })
 
     await user.save()
   })
@@ -23,9 +23,9 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
-      name: 'Matti Luukkainen',
-      password: 'salainen',
+      username: 'peruna',
+      name: 'Pertti Peruna',
+      password: 'salasana',
     }
 
     await api
@@ -41,25 +41,56 @@ describe('when there is initially one user at db', () => {
     expect(usernames).toContain(newUser.username)
   })
 
-  test('creation fails with proper statuscode and message if username already taken', async () => {
-    const usersAtStart = await helper.usersInDb()
 
-    const newUser = {
-      username: 'root',
-      name: 'Superuser',
-      password: 'salainen',
-    }
+  describe('account creation validation', () => {
+    test('trying to use an existing username fails with proper statuscode and message if username already taken', async () => {
+      const usersAtStart = await helper.usersInDb()
 
-    const result = await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+      const newUser = {
+        username: 'potato',
+        name: 'Superuser',
+        password: 'salainen',
+      }
 
-    expect(result.body.error).toContain('username must be unique')
+      const result = await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
 
-    const usersAtEnd = await helper.usersInDb()
-    expect(usersAtEnd).toHaveLength(usersAtStart.length)
+      expect(result.body.error).toContain('username must be unique')
+
+      const usersAtEnd = await helper.usersInDb()
+      expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+
+    test('trying to create a username shorter than 3 characters gives a proper error', async () => {
+      const newUser = {
+        username: 'pe',
+        name: 'Pertti Peruna',
+        password: 'salasana',
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+    })
+
+    test('trying to create an account with password shorter than 3 characters gives a proper error', async () => {
+      const newUser = {
+        username: 'peruna',
+        name: 'Pertti Peruna',
+        password: 'pw',
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+    })
   })
 })
 
