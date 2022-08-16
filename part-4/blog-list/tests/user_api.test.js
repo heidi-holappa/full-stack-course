@@ -14,7 +14,7 @@ describe('when there is initially one user at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('salasana', 10)
-    const user = new User({ username: 'potato', passwordHash })
+    const user = new User({ username: 'potato', name: 'Mr. Potato', passwordHash })
 
     await user.save()
   })
@@ -94,6 +94,7 @@ describe('when there is initially one user at db', () => {
   })
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await User.deleteMany({})
   mongoose.connection.close()
 })

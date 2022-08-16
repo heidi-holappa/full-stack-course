@@ -18,13 +18,13 @@ beforeEach(async () => {
 
   await User.deleteMany({})
   const passwordHash = await bcrypt.hash('salasana', 10)
-  const user = new User({ username: 'potato', passwordHash })
+  const user = new User({ username: 'potato2', name: 'Mr. Potato', passwordHash })
 
   await user.save()
   //login
   const login = await api
     .post('/api/login')
-    .send({ username: 'potato', password: 'salasana' })
+    .send({ username: 'potato2', password: 'salasana' })
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
@@ -48,8 +48,6 @@ beforeEach(async () => {
     }
   ]
   await Blog.insertMany(initialBlogentries)
-  const blogs = await helper.blogsInDb()
-  console.log('initial blogs', blogs)
 })
 
 
@@ -218,10 +216,27 @@ describe('when some blogs are initially saved', () => {
       expect(response[0].likes).toBe(0)
 
     })
+
+    test('post fails without authorization token', async () => {
+      const newBlogentry = {
+        title: 'No likes to be given',
+        author: 'Unliked',
+        url: 'https://www.unliked.org',
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlogentry)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+    })
   })
 
 })
 
-afterAll(() => {
+afterAll(async () => {
+  await Blog.deleteMany({})
+
+  await User.deleteMany({})
   mongoose.connection.close()
 })
