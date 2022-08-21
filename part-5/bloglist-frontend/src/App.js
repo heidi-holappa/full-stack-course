@@ -12,9 +12,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  
   const [errorMessage, setErrorMessage] = useState(null)
   const [infoMessage, setInfoMessage] = useState(null)
   const [username, setUsername] = useState('') 
@@ -57,25 +55,15 @@ const App = () => {
     }
   }
   
-  const addBlog = (event) => {
-    event.preventDefault()
-  
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
+  const addBlog = (blogObject) => {
     blogService
     .create(blogObject)
     .then(returnedBlog => {
       setBlogs(blogs.concat(returnedBlog))
-      setInfoMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+      setInfoMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       setTimeout(() => {
         setInfoMessage(null)
       }, 3000)
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
     })
     .catch(error => {
       setErrorMessage(`${error.response.data.error}`)
@@ -122,15 +110,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           {logoutButton()}
           <Togglable buttonLabel="new note">
-            <BlogForm 
-              handleSubmit={addBlog}
-              author={newAuthor}
-              title={newTitle}
-              url={newUrl}
-              handleTitleChange={({ target }) => setNewTitle(target.value)}
-              handleAuthorChange={({ target }) => setNewAuthor(target.value)}
-              handleUrlChange={({ target }) => setNewUrl(target.value)}
-            />
+            <BlogForm createBlog={addBlog} />
           </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
