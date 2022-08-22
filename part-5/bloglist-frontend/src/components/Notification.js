@@ -7,17 +7,17 @@ const Notification = ({ message }) => {
     borderRadius: '5px',
     padding: '10px',
     marginBottom: '10px'
-  }  
-  
-  if (message === null) {
-      return null
-    }
-  
-    return (
-      <div className="error" style={messageStyle}>
-        {message}
-      </div>
-    )
   }
-  
-  export default Notification
+
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error" style={messageStyle}>
+      {message}
+    </div>
+  )
+}
+
+export default Notification

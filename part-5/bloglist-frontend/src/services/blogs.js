@@ -18,7 +18,7 @@ const create = async newObject => {
   }
 
   const response = await axios.post(baseUrl, newObject, config)
-    
+
   return response.data
 }
 
@@ -28,7 +28,7 @@ const update = async (id, newObject) => {
   }
 
   const response = await axios.put(`${ baseUrl }/${id}`, newObject, config)
-  
+
   return response.data
 }
 

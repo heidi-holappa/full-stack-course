@@ -8,16 +8,16 @@ const ErrorNotification = ({ message }) => {
     padding: '10px',
     marginBottom: '10px'
   }
-  
+
   if (message === null) {
-      return null
-    }
-  
-    return (
-      <div className="error" style={messageStyle}>
-        {message}
-      </div>
-    )
+    return null
   }
-  
-  export default ErrorNotification
+
+  return (
+    <div className="error" style={messageStyle}>
+      {message}
+    </div>
+  )
+}
+
+export default ErrorNotification

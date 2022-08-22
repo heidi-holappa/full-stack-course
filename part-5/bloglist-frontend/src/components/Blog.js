@@ -1,13 +1,14 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
-const Blog = ({ 
+const Blog = ({
   blog,
   handleAddLike,
   handleRemoveBlog,
-  currentUser 
+  currentUser
 }) => {
   const [expanded, setExpanded] = useState(false)
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -41,8 +42,8 @@ const Blog = ({
       window.confirm(
         `Are you sure you want to delete entry '${blog.title}' by ${blog.author}?`
       )) {
-        handleRemoveBlog(blog.id)
-      }
+      handleRemoveBlog(blog.id)
+    }
   }
 
   const ShowRemoveButton = () => {
@@ -59,10 +60,10 @@ const Blog = ({
   if (expanded) {
     return (
       <div style={blogStyle}>
-        '{blog.title}' by {blog.author} <button onClick={toggleExpanded}>view</button><br></br>
+        &apos;{blog.title}&apos; by {blog.author} <button onClick={toggleExpanded}>view</button><br></br>
         {blog.url} <br></br>
         likes {blog.likes} <button onClick={addLike}>like</button> <br></br>
-        {blog.user.name} 
+        {blog.user.name}
         <ShowRemoveButton />
       </div>
     )
@@ -71,9 +72,16 @@ const Blog = ({
 
   return (
     <div style={blogStyle}>
-      '{blog.title}' by {blog.author} <button onClick={toggleExpanded}>view</button>
-    </div>  
+      &apos;{blog.title}&apos; by {blog.author} <button onClick={toggleExpanded}>view</button>
+    </div>
   )
-
 }
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleAddLike: PropTypes.func.isRequired,
+  handleRemoveBlog: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired
+}
+
 export default Blog
