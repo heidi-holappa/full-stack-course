@@ -19,6 +19,8 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
 
+  const blogFormRef = useRef()
+
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -56,6 +58,7 @@ const App = () => {
   }
   
   const addBlog = (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     blogService
     .create(blogObject)
     .then(returnedBlog => {
@@ -72,6 +75,45 @@ const App = () => {
       }, 3000)
     })
     
+  }
+
+  const removeBlog = (id) => {
+    const blog = blogs.find(b => b.id === id)
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(
+          blogs.filter(function(blog) {
+            return blog.id !== id
+          })
+        )
+        setInfoMessage(`Successfully removed blog ${blog.title} by ${blog.author}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+      })
+      .catch(error => {
+        setErrorMessage(`Removing a blog failed. Error: ${error.response.data.error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+      })
+  }
+
+  const handleAddLike = (id) => {
+    const blogObject = blogs.find(blog => blog.id === id)
+    const updatedBlogObject = { ...blogObject, likes: blogObject.likes + 1}
+    blogService
+      .update(id, updatedBlogObject)
+      .then(response => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog: updatedBlogObject ))
+      })
+      .catch(error => {
+        setErrorMessage(`Liking a blog failed. Error: ${error.response.data.error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+      })
   }
 
 
@@ -109,11 +151,21 @@ const App = () => {
         <div>
           <p>{user.name} logged in</p>
           {logoutButton()}
-          <Togglable buttonLabel="new note">
-            <BlogForm createBlog={addBlog} />
+          <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+            <BlogForm 
+              createBlog={addBlog} 
+            />
           </Togglable>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+          {blogs
+            .sort((a, b) => b.likes - a.likes)  
+            .map(blog =>
+              <Blog 
+                key={blog.id}
+                blog={blog} 
+                handleAddLike={handleAddLike}
+                handleRemoveBlog={removeBlog}
+                currentUser={user}
+              />
           )}
         </div>
       }
