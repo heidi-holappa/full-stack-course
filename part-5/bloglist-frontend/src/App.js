@@ -12,11 +12,10 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  
   const [errorMessage, setErrorMessage] = useState(null)
   const [infoMessage, setInfoMessage] = useState(null)
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('') 
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
@@ -24,7 +23,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -56,25 +55,24 @@ const App = () => {
       }, 3000)
     }
   }
-  
+
   const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
-    .create(blogObject)
-    .then(returnedBlog => {
-      setBlogs(blogs.concat(returnedBlog))
-      setInfoMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
-      setTimeout(() => {
-        setInfoMessage(null)
-      }, 3000)
-    })
-    .catch(error => {
-      setErrorMessage(`${error.response.data.error}`)
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
-    })
-    
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat({ ...returnedBlog, user }))
+        setInfoMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+        setTimeout(() => {
+          setInfoMessage(null)
+        }, 3000)
+      })
+      .catch(error => {
+        setErrorMessage(`${error.response.data.error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+      })
   }
 
   const removeBlog = (id) => {
@@ -89,7 +87,7 @@ const App = () => {
         )
         setInfoMessage(`Successfully removed blog ${blog.title} by ${blog.author}`)
         setTimeout(() => {
-          setErrorMessage(null)
+          setInfoMessage(null)
         }, 3000)
       })
       .catch(error => {
@@ -102,10 +100,10 @@ const App = () => {
 
   const handleAddLike = (id) => {
     const blogObject = blogs.find(blog => blog.id === id)
-    const updatedBlogObject = { ...blogObject, likes: blogObject.likes + 1}
+    const updatedBlogObject = { ...blogObject, likes: blogObject.likes + 1 }
     blogService
       .update(id, updatedBlogObject)
-      .then(response => {
+      .then(() => {
         setBlogs(blogs.map(blog => blog.id !== id ? blog: updatedBlogObject ))
       })
       .catch(error => {
@@ -118,13 +116,13 @@ const App = () => {
 
 
   const logoutButton = () => {
-    const handleClick = (event) => {
+    const handleClick = () => {
       window.localStorage.removeItem('loggedBlogappUser')
       window.location.reload()
     }
     return (
       <div>
-        <button onClick={handleClick}>logout</button>    
+        <button onClick={handleClick}>logout</button>
       </div>
     )
   }
@@ -135,7 +133,6 @@ const App = () => {
       <h2>Login</h2>
       <ErrorNotification message={errorMessage} />
       <Notification message={infoMessage} />
-      
 
       {user === null ?
         <Togglable buttonLabel='login'>
@@ -152,21 +149,21 @@ const App = () => {
           <p>{user.name} logged in</p>
           {logoutButton()}
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm 
-              createBlog={addBlog} 
+            <BlogForm
+              createBlog={addBlog}
             />
           </Togglable>
           {blogs
-            .sort((a, b) => b.likes - a.likes)  
+            .sort((a, b) => b.likes - a.likes)
             .map(blog =>
-              <Blog 
+              <Blog
                 key={blog.id}
-                blog={blog} 
+                blog={blog}
                 handleAddLike={handleAddLike}
                 handleRemoveBlog={removeBlog}
                 currentUser={user}
               />
-          )}
+            )}
         </div>
       }
     </div>
