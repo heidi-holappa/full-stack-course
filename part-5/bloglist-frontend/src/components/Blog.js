@@ -62,7 +62,7 @@ const Blog = ({
       <div style={blogStyle} className='blog'>
         &apos;{blog.title}&apos; by {blog.author} <button onClick={toggleExpanded}>view</button><br></br>
         {blog.url} <br></br>
-        likes {blog.likes} <button onClick={addLike}>like</button> <br></br>
+        Likes {blog.likes} <button onClick={addLike}>like</button> <br></br>
         {blog.user.name}
         <ShowRemoveButton />
       </div>
@@ -71,7 +71,7 @@ const Blog = ({
 
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       &apos;{blog.title}&apos; by {blog.author} <button onClick={toggleExpanded}>view</button>
     </div>
   )
