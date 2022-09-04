@@ -1,15 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    message: 'initial message',
-    visible: true
+    message: 'Initial message. Set visible to true to show initial content',
+    visible: false
 }
 
 const notificationSlice = createSlice({
     name: 'notification',
     initialState,
     reducers: {
-      setNotification(state, action) {
+      setNewNotification(state, action) {
         return {
           message: action.payload,
           visible: true
@@ -25,5 +25,14 @@ const notificationSlice = createSlice({
 })
 
 
-export const { setNotification, hideNotification } = notificationSlice.actions
+export const setNotification = (content, seconds) => {
+  return async dispatch => {
+    await dispatch(setNewNotification(`You voted ${content}`))
+    setTimeout(() => {
+        dispatch(hideNotification())
+      }, seconds * 1000)
+  }
+}
+
+export const { setNewNotification, hideNotification } = notificationSlice.actions
 export default notificationSlice.reducer
