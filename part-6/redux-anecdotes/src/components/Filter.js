@@ -1,4 +1,4 @@
-import { connect, useDispatch } from "react-redux"
+import { connect } from "react-redux"
 import { updateFilter } from "../reducers/filterReducer"
 
 const Filter = (props) => {
