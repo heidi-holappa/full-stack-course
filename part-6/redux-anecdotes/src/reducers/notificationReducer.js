@@ -24,15 +24,20 @@ const notificationSlice = createSlice({
     }
 })
 
-
+let lastTimeoutId
 export const setNotification = (content, seconds) => {
   return async dispatch => {
+    if (lastTimeoutId) {
+      clearTimeout(lastTimeoutId)
+    }
+    
     await dispatch(setNewNotification(`You voted ${content}`))
-    setTimeout(() => {
+    lastTimeoutId = setTimeout(() => {
         dispatch(hideNotification())
-      }, seconds * 1000)
+    }, seconds * 1000)
+    
   }
 }
 
-export const { setNewNotification, hideNotification } = notificationSlice.actions
+export const { setNewNotification, hideNotification, storeTimeoutRef } = notificationSlice.actions
 export default notificationSlice.reducer

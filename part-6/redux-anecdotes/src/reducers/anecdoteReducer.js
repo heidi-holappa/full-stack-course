@@ -30,7 +30,7 @@ const anecdoteSlice = createSlice({
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
-    dispatch(setAnecdotes(anecdotes))
+    dispatch(setAnecdotes(anecdotes.sort((a, b) => { return b.votes - a.votes})))
   }
 }
 
