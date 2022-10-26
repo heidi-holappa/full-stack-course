@@ -94,10 +94,16 @@ const CreateNew = (props, setNotification) => {
     navigate('/')
   }
 
+  const handleReset = (e) => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div>
           content
           <input {...content} />
@@ -113,7 +119,8 @@ const CreateNew = (props, setNotification) => {
           <input {...info} />
           {/* <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} /> */}
         </div>
-        <button>create</button>
+        <button onClick={handleSubmit}>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
