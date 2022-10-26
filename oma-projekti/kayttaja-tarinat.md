@@ -2,7 +2,7 @@
 
 **Haastateltava:** Jan Huovinen  
 
-Vertailukohtana web-case
+Vertailukohtana yleisesti käytetty järjestelmä. 
 
 ## Miksi tarve uudelle sovellukselle
 - Kalenteri on onneton
