@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+// import useField from './hooks'
 import axios from 'axios'
 
 const useField = (type) => {
@@ -18,7 +19,25 @@ const useField = (type) => {
 const useCountry = (name) => {
   const [country, setCountry] = useState(null)
 
-  useEffect(() => {})
+  useEffect(() => {
+    if(name) {
+      
+      axios
+      .get(
+        `https://restcountries.com/v3.1/name/${name}?fullText=true`
+        )
+      .then(response => {
+        setCountry(response.data[0])
+      })
+      .catch((error) => {
+        // Clears console incase a country with the given name is not found.
+        if(error.response && error.response.status === 404) {
+          console.clear()
+        }
+        setCountry(null) 
+      })
+    }
+  })
 
   return country
 }
