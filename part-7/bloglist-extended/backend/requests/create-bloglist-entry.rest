@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Kvaak Kvaak eller Quack Quack?",
+    "author": "Kalle Anka",
+    "url": "https://www.duckpost.com/1",
+    "likes": 0
+}
