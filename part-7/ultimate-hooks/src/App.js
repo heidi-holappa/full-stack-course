@@ -30,7 +30,7 @@ const useResource = (baseUrl) => {
     .catch((error) => {
       console.log(error) 
     })
-  }, [baseUrl])
+  })
 
 
 
