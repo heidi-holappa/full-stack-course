@@ -3,8 +3,11 @@ const usersRouter = require('express').Router()
 const User = require('../models/user')
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User
-    .find({}).populate('blogs', { title: 1, author: 1, url: 1 })
+  const users = await User.find({}).populate('blogs', {
+    title: 1,
+    author: 1,
+    url: 1,
+  })
   response.json(users)
 })
 
@@ -14,11 +17,11 @@ usersRouter.post('/', async (request, response) => {
   const existingUser = await User.findOne({ username })
   if (existingUser) {
     return response.status(400).json({
-      error: 'username must be unique'
+      error: 'username must be unique',
     })
   } else if (password.length < 3) {
     return response.status(400).json({
-      error: 'password must have atleast 3 characters'
+      error: 'password must have atleast 3 characters',
     })
   }
 

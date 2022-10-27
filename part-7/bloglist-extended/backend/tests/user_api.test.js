@@ -14,7 +14,11 @@ describe('when there is initially one user at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('salasana', 10)
-    const user = new User({ username: 'potato', name: 'Mr. Potato', passwordHash })
+    const user = new User({
+      username: 'potato',
+      name: 'Mr. Potato',
+      passwordHash,
+    })
 
     await user.save()
   })
@@ -37,10 +41,9 @@ describe('when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map((u) => u.username)
     expect(usernames).toContain(newUser.username)
   })
-
 
   describe('account creation validation', () => {
     test('trying to use an existing username fails with proper statuscode and message if username already taken', async () => {

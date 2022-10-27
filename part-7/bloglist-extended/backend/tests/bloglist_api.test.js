@@ -18,7 +18,11 @@ beforeEach(async () => {
 
   await User.deleteMany({})
   const passwordHash = await bcrypt.hash('salasana', 10)
-  const user = new User({ username: 'potato2', name: 'Mr. Potato', passwordHash })
+  const user = new User({
+    username: 'potato2',
+    name: 'Mr. Potato',
+    passwordHash,
+  })
 
   await user.save()
   //login
@@ -37,22 +41,20 @@ beforeEach(async () => {
       author: 'Kalle Anka',
       url: 'https://www.kalle-anka.kvaak/bad-luck',
       likes: 0,
-      user: userid
+      user: userid,
     },
     {
       title: 'No such thing as luck',
       author: 'Alexander Lukas',
       url: 'https://www.lycksam-lukas.kvaak/no-such-thing',
       likes: 0,
-      user: userid
-    }
+      user: userid,
+    },
   ]
   await Blog.insertMany(initialBlogentries)
 })
 
-
 describe('when some blogs are initially saved', () => {
-
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
@@ -69,11 +71,9 @@ describe('when some blogs are initially saved', () => {
   test('a specified blog title is within the returned blogs', async () => {
     const response = await api.get('/api/blogs')
 
-    const contents = response.body.map(r => r.title)
+    const contents = response.body.map((r) => r.title)
 
-    expect(contents).toContain(
-      'No such thing as luck'
-    )
+    expect(contents).toContain('No such thing as luck')
   })
 
   test('fetched blogs have a path id', async () => {
@@ -90,22 +90,17 @@ describe('when some blogs are initially saved', () => {
         title: 'Bad luck tends to follow me around',
         author: 'Kalle Anka',
         url: 'https://www.kalle-anka.kvaak/bad-luck',
-        likes: 0
+        likes: 0,
       }
 
-      await api
-        .put(`/api/blogs/${id}`)
-        .send(updatedpost)
-        .expect(204)
+      await api.put(`/api/blogs/${id}`).send(updatedpost).expect(204)
 
       const response = await helper.blogsInDb()
       expect(response[0].title).toBe('Bad luck tends to follow me around')
     })
-
   })
 
   describe('deleting a blogentry', () => {
-
     test('deleting a blogentry reduces numbers of blogs by one', async () => {
       const entries = await helper.blogsInDb()
       const id = entries[0].id
@@ -129,21 +124,18 @@ describe('when some blogs are initially saved', () => {
         .expect(204)
 
       const response = await api.get('/api/blogs')
-      const ids = response.body.map(r => r.id)
+      const ids = response.body.map((r) => r.id)
       expect(ids).not.toContain(id)
-
     })
   })
 
   describe('adding a new blogentry', () => {
-
-
     test('a valid blogentry can be added ', async () => {
       const newBlogentry = {
         title: 'Computers are essential for smart business',
         author: 'Joakim von Anka',
         url: 'https://www.free-blog-platform.kvaak/computers-smart-business',
-        likes: 0
+        likes: 0,
       }
 
       await api
@@ -157,17 +149,15 @@ describe('when some blogs are initially saved', () => {
       expect(blogsAtEnd).toHaveLength(helper.initialBlogentries.length + 1)
       const response = await api.get('/api/blogs')
 
-      const contents = response.body.map(r => r.title)
-      expect(contents).toContain(
-        'Computers are essential for smart business'
-      )
+      const contents = response.body.map((r) => r.title)
+      expect(contents).toContain('Computers are essential for smart business')
     })
 
     test('blogentry without author is not added', async () => {
       const newBlogentry = {
         title: 'Why charities are humbug',
         url: 'https://www.free-blog-platform.kvaak/humbug-charities',
-        likes: 0
+        likes: 0,
       }
 
       await api
@@ -183,7 +173,7 @@ describe('when some blogs are initially saved', () => {
     test('blogentry without title and url is not added', async () => {
       const newBlogentry = {
         author: 'Kalle Anka',
-        likes: 0
+        likes: 0,
       }
 
       await api
@@ -214,7 +204,6 @@ describe('when some blogs are initially saved', () => {
 
       const response = await helper.blogsInDb()
       expect(response[0].likes).toBe(0)
-
     })
 
     test('post fails without authorization token', async () => {
@@ -231,7 +220,6 @@ describe('when some blogs are initially saved', () => {
         .expect('Content-Type', /application\/json/)
     })
   })
-
 })
 
 afterAll(async () => {

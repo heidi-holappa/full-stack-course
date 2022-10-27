@@ -13,5 +13,6 @@ const error = (...params) => {
 }
 
 module.exports = {
-  info, error
+  info,
+  error,
 }
