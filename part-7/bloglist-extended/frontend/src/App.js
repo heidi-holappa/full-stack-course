@@ -52,18 +52,18 @@ const App = () => {
     }
   }
 
-  const addBlog = (blogObject) => {
-    blogFormRef.current.toggleVisibility()
-    blogService
-      .create(blogObject)
-      .then((returnedBlog) => {
-        setBlogs(blogs.concat({ ...returnedBlog, user }))
-        notify(`a new blog '${blogObject.title}' by ${blogObject.author} added`)
-      })
-      .catch((error) => {
-        notify('creating a blog failed: ' + error.response.data.error, 'alert')
-      })
-  }
+  // const addBlog = (blogObject) => {
+  //   blogFormRef.current.toggleVisibility()
+  //   blogService
+  //     .create(blogObject)
+  //     .then((returnedBlog) => {
+  //       setBlogs(blogs.concat({ ...returnedBlog, user }))
+  //       notify(`a new blog '${blogObject.title}' by ${blogObject.author} added`)
+  //     })
+  //     .catch((error) => {
+  //       notify('creating a blog failed: ' + error.response.data.error, 'alert')
+  //     })
+  // }
 
   const notify = (message, type = 'info') => {
     dispatch(createNotification(message, type, 5))
@@ -140,7 +140,8 @@ const App = () => {
           <p>{user.name} logged in</p>
           {logoutButton()}
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
+            <BlogForm />
+            {/* <BlogForm createBlog={addBlog} /> */}
           </Togglable>
           {blogs
             .sort((a, b) => b.likes - a.likes)
