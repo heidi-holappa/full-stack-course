@@ -13,6 +13,7 @@ const getAll = () => {
 }
 
 const create = async (newObject) => {
+  console.log('backend: creating blog')
   const config = {
     headers: { Authorization: token },
   }
@@ -22,22 +23,30 @@ const create = async (newObject) => {
   return response.data
 }
 
-const update = async (id, newObject) => {
+const update = async (newObject) => {
+  console.log('backend: updating blog')
   const config = {
     headers: { Authorization: token },
   }
 
-  const response = await axios.put(`${baseUrl}/${id}`, newObject, config)
+  const updatedBlog = { ...newObject, likes: newObject.likes + 1 }
+
+  const response = await axios.put(
+    `${baseUrl}/${newObject.id}`,
+    updatedBlog,
+    config
+  )
 
   return response.data
 }
 
-const remove = async (id) => {
+const remove = async (blogObject) => {
   const config = {
     headers: { Authorization: token },
   }
+  console.log('backend: removing blog')
 
-  const response = await axios.delete(`${baseUrl}/${id}`, config)
+  const response = await axios.delete(`${baseUrl}/${blogObject.id}`, config)
 
   return response.data
 }

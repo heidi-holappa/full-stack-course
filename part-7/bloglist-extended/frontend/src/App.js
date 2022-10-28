@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux'
 const App = () => {
   const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
-  // const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -52,59 +51,8 @@ const App = () => {
     }
   }
 
-  // const addBlog = (blogObject) => {
-  //   blogFormRef.current.toggleVisibility()
-  //   blogService
-  //     .create(blogObject)
-  //     .then((returnedBlog) => {
-  //       setBlogs(blogs.concat({ ...returnedBlog, user }))
-  //       notify(`a new blog '${blogObject.title}' by ${blogObject.author} added`)
-  //     })
-  //     .catch((error) => {
-  //       notify('creating a blog failed: ' + error.response.data.error, 'alert')
-  //     })
-  // }
-
   const notify = (message, type = 'info') => {
     dispatch(createNotification(message, type, 5))
-  }
-
-  const removeBlog = (id) => {
-    const blog = blogs.find((b) => b.id === id)
-    blogService
-      .remove(id)
-      .then(() => {
-        setBlogs(
-          blogs.filter(function (blog) {
-            return blog.id !== id
-          })
-        )
-        notify(`Successfully removed blog ${blog.title} by ${blog.author}`)
-      })
-      .catch((error) => {
-        notify(
-          `Removing a blog failed. Error: ${error.response.data.error}`,
-          'alert'
-        )
-      })
-  }
-
-  const handleAddLike = (id) => {
-    const blogObject = blogs.find((blog) => blog.id === id)
-    const updatedBlogObject = { ...blogObject, likes: blogObject.likes + 1 }
-    blogService
-      .update(id, updatedBlogObject)
-      .then(() => {
-        setBlogs(
-          blogs.map((blog) => (blog.id !== id ? blog : updatedBlogObject))
-        )
-      })
-      .catch((error) => {
-        notify(
-          `Liking a blog failed. Error: ${error.response.data.error}`,
-          'alert'
-        )
-      })
   }
 
   const logoutButton = () => {
@@ -141,18 +89,11 @@ const App = () => {
           {logoutButton()}
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm />
-            {/* <BlogForm createBlog={addBlog} /> */}
           </Togglable>
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleAddLike={handleAddLike}
-                handleRemoveBlog={removeBlog}
-                currentUser={user}
-              />
+              <Blog key={blog.id} blog={blog} currentUser={user} />
             ))}
         </div>
       )}

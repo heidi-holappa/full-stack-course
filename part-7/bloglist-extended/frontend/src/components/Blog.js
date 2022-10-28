@@ -1,8 +1,12 @@
-import PropTypes from 'prop-types'
+// import PropTypes from 'prop-types'
+// import { connect } from 'react-redux'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deleteBlogEntry, addLike } from '../reducers/blogReducer'
 
-const Blog = ({ blog, handleAddLike, handleRemoveBlog, currentUser }) => {
+const Blog = ({ blog, currentUser }) => {
   const [expanded, setExpanded] = useState(false)
+  const dispatch = useDispatch()
 
   const blogStyle = {
     paddingTop: 10,
@@ -28,8 +32,10 @@ const Blog = ({ blog, handleAddLike, handleRemoveBlog, currentUser }) => {
     setExpanded(!expanded)
   }
 
-  const addLike = () => {
-    handleAddLike(blog.id)
+  const addVote = () => {
+    dispatch(addLike(blog))
+    // addLike(blog)
+    // handleAddLike(blog.id)
   }
 
   const removeBlog = () => {
@@ -38,7 +44,7 @@ const Blog = ({ blog, handleAddLike, handleRemoveBlog, currentUser }) => {
         `Are you sure you want to delete entry '${blog.title}' by ${blog.author}?`
       )
     ) {
-      handleRemoveBlog(blog.id)
+      dispatch(deleteBlogEntry(blog))
     }
   }
 
@@ -62,7 +68,7 @@ const Blog = ({ blog, handleAddLike, handleRemoveBlog, currentUser }) => {
         <button onClick={toggleExpanded}>view</button>
         <br></br>
         {blog.url} <br></br>
-        Likes {blog.likes} <button onClick={addLike}>like</button> <br></br>
+        Likes {blog.likes} <button onClick={addVote}>like</button> <br></br>
         {blog.user.name}
         <ShowRemoveButton />
       </div>
@@ -77,11 +83,12 @@ const Blog = ({ blog, handleAddLike, handleRemoveBlog, currentUser }) => {
   )
 }
 
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  handleAddLike: PropTypes.func.isRequired,
-  handleRemoveBlog: PropTypes.func.isRequired,
-  currentUser: PropTypes.object.isRequired,
-}
+// Blog.propTypes = {
+//   blog: PropTypes.object.isRequired,
+//   handleAddLike: PropTypes.func.isRequired,
+//   handleRemoveBlog: PropTypes.func.isRequired,
+//   currentUser: PropTypes.object.isRequired,
+// }
 
 export default Blog
+// export default connect(null, { deleteBlogEntry })(Blog)

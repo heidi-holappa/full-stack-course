@@ -1,38 +1,8 @@
-// import PropTypes from 'prop-types'
-
 import { connect } from 'react-redux'
 import { createBlogEntry } from '../reducers/blogReducer'
 import { createNotification } from '../reducers/notificationReducer'
 
 const BlogForm = (props) => {
-  // const [newTitle, setNewTitle] = useState('')
-  // const [newAuthor, setNewAuthor] = useState('')
-  // const [newUrl, setNewUrl] = useState('')
-
-  // const handleTitleChange = (event) => {
-  //   setNewTitle(event.target.value)
-  // }
-
-  // const handleAuthorChange = (event) => {
-  //   setNewAuthor(event.target.value)
-  // }
-
-  // const handleUrlChange = (event) => {
-  //   setNewUrl(event.target.value)
-  // }
-
-  // const addBlog = (event) => {
-  //   event.preventDefault()
-  //   createBlog({
-  //     title: newTitle,
-  //     author: newAuthor,
-  //     url: newUrl,
-  //   })
-  //   setNewTitle('')
-  //   setNewAuthor('')
-  //   setNewUrl('')
-  // }
-
   const addBlog = async (event) => {
     event.preventDefault()
     const content = {
@@ -61,11 +31,5 @@ const BlogForm = (props) => {
     </div>
   )
 }
-
-// BlogForm.propTypes = {
-//   createBlog: PropTypes.func.isRequired,
-// }
-
-// export default BlogForm
 
 export default connect(null, { createBlogEntry, createNotification })(BlogForm)
