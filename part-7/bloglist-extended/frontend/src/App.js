@@ -3,17 +3,19 @@ import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
+import { createNotification } from './reducers/notificationReducer'
 import Notification from './components/Notification'
-import ErrorNotification from './components/ErrorNotification'
 import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+import { useDispatch } from 'react-redux'
+
 const App = () => {
+  const dispatch = useDispatch()
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [infoMessage, setInfoMessage] = useState(null)
+  // const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -46,10 +48,7 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 3000)
+      notify('wrong credentials', 'alert')
     }
   }
 
@@ -59,19 +58,15 @@ const App = () => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.concat({ ...returnedBlog, user }))
-        setInfoMessage(
-          `a new blog ${blogObject.title} by ${blogObject.author} added`
-        )
-        setTimeout(() => {
-          setInfoMessage(null)
-        }, 3000)
+        notify(`a new blog '${blogObject.title}' by ${blogObject.author} added`)
       })
       .catch((error) => {
-        setErrorMessage(`${error.response.data.error}`)
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 3000)
+        notify('creating a blog failed: ' + error.response.data.error, 'alert')
       })
+  }
+
+  const notify = (message, type = 'info') => {
+    dispatch(createNotification(message, type, 5))
   }
 
   const removeBlog = (id) => {
@@ -84,20 +79,13 @@ const App = () => {
             return blog.id !== id
           })
         )
-        setInfoMessage(
-          `Successfully removed blog ${blog.title} by ${blog.author}`
-        )
-        setTimeout(() => {
-          setInfoMessage(null)
-        }, 3000)
+        notify(`Successfully removed blog ${blog.title} by ${blog.author}`)
       })
       .catch((error) => {
-        setErrorMessage(
-          `Removing a blog failed. Error: ${error.response.data.error}`
+        notify(
+          `Removing a blog failed. Error: ${error.response.data.error}`,
+          'alert'
         )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 3000)
       })
   }
 
@@ -112,12 +100,10 @@ const App = () => {
         )
       })
       .catch((error) => {
-        setErrorMessage(
-          `Liking a blog failed. Error: ${error.response.data.error}`
+        notify(
+          `Liking a blog failed. Error: ${error.response.data.error}`,
+          'alert'
         )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 3000)
       })
   }
 
@@ -137,8 +123,7 @@ const App = () => {
     <div>
       <h2>BlogApp</h2>
       <h2>Login</h2>
-      <ErrorNotification message={errorMessage} />
-      <Notification message={infoMessage} />
+      <Notification />
 
       {user === null ? (
         <Togglable buttonLabel="login">
