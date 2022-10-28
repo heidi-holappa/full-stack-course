@@ -1,71 +1,25 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
-import Blog from './components/Blog'
+import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
-import { createNotification } from './reducers/notificationReducer'
+import LogoutButton from './components/LogoutButton'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 
-import blogService from './services/blogs'
-import loginService from './services/login'
-
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUser } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
   const blogFormRef = useRef()
+  const user = useSelector((state) => state.user)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initializeBlogs()), dispatch(initializeUser())
   }, [])
-
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      })
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setUsername('')
-      setPassword('')
-    } catch (exception) {
-      notify('wrong credentials', 'alert')
-    }
-  }
-
-  const notify = (message, type = 'info') => {
-    dispatch(createNotification(message, type, 5))
-  }
-
-  const logoutButton = () => {
-    const handleClick = () => {
-      window.localStorage.removeItem('loggedBlogappUser')
-      window.location.reload()
-    }
-    return (
-      <div>
-        <button onClick={handleClick}>logout</button>
-      </div>
-    )
-  }
 
   return (
     <div>
@@ -75,26 +29,16 @@ const App = () => {
 
       {user === null ? (
         <Togglable buttonLabel="login">
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
+          <LoginForm />
         </Togglable>
       ) : (
         <div>
           <p>{user.name} logged in</p>
-          {logoutButton()}
+          <LogoutButton />
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm />
           </Togglable>
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog key={blog.id} blog={blog} currentUser={user} />
-            ))}
+          <BlogList />
         </div>
       )}
     </div>
@@ -102,3 +46,44 @@ const App = () => {
 }
 
 export default App
+
+// useEffect(() => {
+//   const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+//   if (loggedUserJSON) {
+//     const user = JSON.parse(loggedUserJSON)
+//     setUser(user)
+//     blogService.setToken(user.token)
+//   }
+// }, [])
+
+// const handleLogin = async (event) => {
+//   event.preventDefault()
+//   try {
+//     const user = await loginService.login({
+//       username,
+//       password,
+//     })
+//     window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+//     blogService.setToken(user.token)
+//     setUser(user)
+//     setUsername('')
+//     setPassword('')
+//   } catch (exception) {
+//     notify('wrong credentials', 'alert')
+//   }
+// }
+
+// const notify = (message, type = 'info') => {
+//   dispatch(createNotification(message, type, 5))
+// }
+
+{
+  /* <BlogList /> */
+}
+{
+  /* {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <Blog key={blog.id} blog={blog} currentUser={user} />
+            ))} */
+}
