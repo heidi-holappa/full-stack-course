@@ -1,8 +1,13 @@
+import { logout } from '../reducers/userReducer'
+import { useDispatch } from 'react-redux'
+
 const LogoutButton = () => {
-  const handleClick = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    window.location.reload()
+  const dispatch = useDispatch()
+
+  const handleClick = async () => {
+    dispatch(logout())
   }
+
   return (
     <div>
       <button onClick={handleClick}>logout</button>
