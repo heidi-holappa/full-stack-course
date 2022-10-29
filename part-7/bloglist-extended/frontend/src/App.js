@@ -12,11 +12,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 import { initializeAllUsers } from './reducers/allUsersReducer'
+import LogoutButton from './components/LogoutButton'
 
 const App = () => {
   const dispatch = useDispatch()
   const users = useSelector((state) => state.users)
   const blogs = useSelector((state) => state.blog)
+  const loggedUser = useSelector((state) => state.user)
+  console.log(`Logged user: ${loggedUser}`)
 
   const match = useMatch('/users/:id')
   const blogMatch = useMatch('/blogs/:id')
@@ -53,6 +56,14 @@ const App = () => {
         <Link style={padding} to="/about">
           About
         </Link>
+        {loggedUser ? (
+          <Link style={padding} to="/">
+            <em>{loggedUser.name} logged in</em>
+            <LogoutButton />
+          </Link>
+        ) : (
+          console.log('no user')
+        )}
       </div>
 
       <Routes>
