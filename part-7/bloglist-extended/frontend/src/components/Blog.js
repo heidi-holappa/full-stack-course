@@ -1,11 +1,10 @@
 // import PropTypes from 'prop-types'
 // import { connect } from 'react-redux'
-import { useState } from 'react'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlogEntry, addLike } from '../reducers/blogReducer'
 
 const Blog = ({ blog }) => {
-  const [expanded, setExpanded] = useState(false)
   const dispatch = useDispatch()
   const currentUser = useSelector((state) => state.user)
 
@@ -29,14 +28,8 @@ const Blog = ({ blog }) => {
     borderRadius: '4px',
   }
 
-  const toggleExpanded = () => {
-    setExpanded(!expanded)
-  }
-
   const addVote = () => {
     dispatch(addLike(blog))
-    // addLike(blog)
-    // handleAddLike(blog.id)
   }
 
   const removeBlog = () => {
@@ -62,24 +55,19 @@ const Blog = ({ blog }) => {
     }
   }
 
-  if (expanded) {
-    return (
-      <div style={blogStyle} className="blog">
-        &apos;{blog.title}&apos; by {blog.author}{' '}
-        <button onClick={toggleExpanded}>view</button>
-        <br></br>
-        {blog.url} <br></br>
-        Likes {blog.likes} <button onClick={addVote}>like</button> <br></br>
-        {blog.user.name}
-        <ShowRemoveButton />
-      </div>
-    )
-  }
-
   return (
     <div style={blogStyle} className="blog">
-      &apos;{blog.title}&apos; by {blog.author}{' '}
-      <button onClick={toggleExpanded}>view</button>
+      <h2>
+        {blog.title} by {blog.author}
+      </h2>
+      <br></br>
+      <a href={blog.url} rel="noreferrer">
+        {blog.url}
+      </a>{' '}
+      <br></br>
+      Likes {blog.likes} <button onClick={addVote}>like</button> <br></br>
+      {blog.user.name}
+      <ShowRemoveButton />
     </div>
   )
 }
