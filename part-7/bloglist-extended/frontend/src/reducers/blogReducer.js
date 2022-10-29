@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
+// import { createNotification } from './notificationReducer'
 
 const blogSlice = createSlice({
   name: 'blogentries',
@@ -18,7 +19,6 @@ const blogSlice = createSlice({
     },
     deleteBlog(state, action) {
       const deletedBlogEntry = action.payload
-      console.log(`${deletedBlogEntry.title}`)
       return state.filter((blog) => blog.id !== deletedBlogEntry.id)
     },
   },
@@ -26,6 +26,21 @@ const blogSlice = createSlice({
 
 export const { setBlogs, updateBlogs, appendBlogEntry, deleteBlog } =
   blogSlice.actions
+
+// export const createBlogEntry = (newBlogEntry) => async (dispatch) => {
+//   try {
+//     dispatch({
+//       type: appendBlogEntry,
+//       data: await blogService.create(newBlogEntry),
+//     })
+
+//     dispatch(
+//       createNotification(`A new blog ${newBlogEntry.title} created`, 'info', 5)
+//     )
+//   } catch (error) {
+//     dispatch(createNotification(error.message, 'alert', 5))
+//   }
+// }
 
 export const createBlogEntry = (newBlogEntry) => {
   return async (dispatch) => {
@@ -35,17 +50,17 @@ export const createBlogEntry = (newBlogEntry) => {
 }
 
 export const deleteBlogEntry = (blogEntry) => {
-  console.log(`running 'deleteBlogEntry': ${blogEntry.title}, ${blogEntry.id}`)
+  // console.log(`running 'deleteBlogEntry': ${blogEntry.title}, ${blogEntry.id}`)
   return async (dispatch) => {
-    const blogToDelete = await blogService.remove(blogEntry)
+    const blogToDelete = await blogService.remove(blogEntry.id)
     dispatch(deleteBlog(blogToDelete))
   }
 }
 
 export const addLike = (blog) => {
-  console.log(`liking blog ${blog.title}`)
+  // console.log(`liking blog ${blog.title}`)
   return async (dispatch) => {
-    const updatedBlog = await blogService.update(blog)
+    const updatedBlog = await blogService.update(blog.id)
     dispatch(updateBlogs(updatedBlog))
   }
 }

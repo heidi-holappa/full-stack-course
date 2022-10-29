@@ -13,9 +13,10 @@ const BlogForm = (props) => {
     event.target.title.value = ''
     event.target.author.value = ''
     event.target.url.value = ''
+
     props.createBlogEntry(content)
-    const message = `blog entry ${content.title} created`
-    props.createNotification(message, 'info', 5)
+    // const message = `blog entry ${content.title} created`
+    // props.createNotification(message, 'info', 5)
   }
 
   return (

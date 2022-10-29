@@ -11,6 +11,7 @@ import LogoutButton from '../components/LogoutButton'
 const BlogView = () => {
   const blogs = useSelector((state) => state.blog)
   const user = useSelector((state) => state.user)
+  console.log(blogs)
 
   const blogFormRef = useRef()
 
