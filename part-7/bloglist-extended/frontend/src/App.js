@@ -1,17 +1,26 @@
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useMatch } from 'react-router-dom'
 import UserView from './views/UserView'
 import BlogView from './views/BlogView'
 import HomeView from './views/HomeView'
+import NotFound from './views/NotFoundView'
+import User from './components/User'
 
 import { useEffect } from 'react'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser } from './reducers/userReducer'
 import { initializeAllUsers } from './reducers/allUsersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
+  const users = useSelector((state) => state.users)
+
+  const match = useMatch('/users/:id')
+
+  const user = match
+    ? users.find((user) => user.username === match.params.id)
+    : null
 
   useEffect(() => {
     dispatch(initializeBlogs()), dispatch(initializeUser())
@@ -42,7 +51,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<BlogView />} />
         <Route path="/about" element={<HomeView />} />
-        <Route path="/users" element={<UserView />} />
+        <Route path="/users" element={<UserView users={users} />} />
+        <Route path="users/:id" element={<User user={user} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   )

@@ -21,7 +21,7 @@ export const login = (content) => {
       const userInfo = await loginService.login(content)
       userService.setUser(userInfo)
       dispatch(loggedInUser(userInfo))
-      console.log('login successful')
+      console.log(`login successful, token: ${userService.getToken()}`)
     } catch (error) {
       console.log(`login failed: ${error}`)
     }

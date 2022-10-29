@@ -5,23 +5,28 @@ import LogoutButton from '../components/LogoutButton'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { initializeAllUsers } from '../reducers/allUsersReducer'
+import { Link } from 'react-router-dom'
 
-const UserView = () => {
+const UserView = ({ users }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(initializeAllUsers())
   }, [dispatch])
 
   const user = useSelector((state) => state.user)
-  const allUsers = useSelector((state) => state.getAllUsers)
+
+  // const match = useMatch('/users/:id')
+  // const user = match
+  //   ? users.find(user => user.id === Number(match.params.id))
+  //   : null
 
   if (user) {
     console.log(`Logged in user: ${user.username}`)
-    console.log(`All users: ${allUsers}`)
+    console.log(`All users: ${users}`)
   }
   return (
     <div>
-      {allUsers === null ? (
+      {users === null ? (
         <div>
           <h2>Users</h2>
           <div>Log in to view registered users.</div>
@@ -33,11 +38,12 @@ const UserView = () => {
         <div>
           <LogoutButton />
           <h2>Users</h2>
-          <ul>
-            {allUsers.map((user) => (
-              <li key={user.id}> {user.username}</li>
-            ))}
-          </ul>
+          {users.map((user) => (
+            <div key={user.id}>
+              <Link to={`/users/${user.username}`}>{user.name}</Link>, blogs:{' '}
+              {user.blogs.length}
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -45,3 +51,7 @@ const UserView = () => {
 }
 
 export default UserView
+
+{
+  /* <Route path="/users/:id" element={<User user={user} />} /> */
+}
