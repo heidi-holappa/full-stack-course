@@ -19,18 +19,17 @@ const BlogView = () => {
 
   return (
     <div>
-      <h2>BlogApp</h2>
-      <h2>Login</h2>
+      <h2>BlogApp - Fullstack course task</h2>
+
       <Notification />
 
       {user === null ? (
         <Togglable buttonLabel="login">
+          <h2>Login</h2>
           <LoginForm />
         </Togglable>
       ) : (
         <div>
-          <p>{user.name} logged in</p>
-
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm />
           </Togglable>
