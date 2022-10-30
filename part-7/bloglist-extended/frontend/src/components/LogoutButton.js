@@ -1,5 +1,6 @@
 import { logout } from '../reducers/userReducer'
 import { useDispatch } from 'react-redux'
+import { Button } from 'react-bootstrap'
 
 const LogoutButton = () => {
   const dispatch = useDispatch()
@@ -10,7 +11,7 @@ const LogoutButton = () => {
 
   return (
     <div>
-      <button onClick={handleClick}>logout</button>
+      <Button onClick={handleClick}>logout</Button>
     </div>
   )
 }
