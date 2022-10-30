@@ -1,23 +1,43 @@
+import { Table, Button } from 'react-bootstrap'
+import { Link, useNavigate } from 'react-router-dom'
+
 const User = ({ user }) => {
   const blogs = user.blogs
-  // if (blogs) {
-  //   console.log(blogs)
+  const navigator = useNavigate()
+
+  // const linkButtonStyle = {
+  //   cursor: 'pointer',
+  //   color: 'white',
+  //   textAlign: 'center',
+  //   textDecoration: 'none',
+  //   padding: '4px',
   // }
+
+  const handleClick = () => {
+    navigator('/users')
+  }
+
   return (
     <div>
-      <h2>Selected user</h2>
-      {user.name}
+      <h2>Viewing blogs by {user.name}</h2>
 
-      <h3>Blogs by user</h3>
-      {blogs.length === 0 ? (
-        <div>No blogs yet.</div>
-      ) : (
-        <ul>
+      <Table striped>
+        <tbody>
           {blogs.map((blog) => (
-            <li key={blog.id}>{blog.title}</li>
+            <tr key={blog.id}>
+              <td>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} by {blog.author}
+                  <br />
+                </Link>
+              </td>
+            </tr>
           ))}
-        </ul>
-      )}
+        </tbody>
+      </Table>
+      <Button variant="primary" onClick={handleClick}>
+        Back
+      </Button>
     </div>
   )
 }

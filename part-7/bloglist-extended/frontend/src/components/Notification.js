@@ -7,19 +7,7 @@ const Notification = ({ notification }) => {
     return null
   }
 
-  console.log(`notification: ${notification}`)
-
   const style = notification.type === 'alert' ? 'danger' : 'success'
-
-  // const messageStyle = {
-  //   color: notification.type === 'alert' ? 'red' : 'green',
-  //   background: 'lightgrey',
-  //   fontSize: 20,
-  //   borderStyle: 'solid',
-  //   borderRadius: 5,
-  //   padding: 10,
-  //   marginBottom: 10,
-  // }
 
   return <Alert variant={style}>{notification.notification}</Alert>
 }

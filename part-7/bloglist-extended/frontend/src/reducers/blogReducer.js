@@ -10,9 +10,9 @@ const blogSlice = createSlice({
       const blog = action.payload
       return blog.sort((a, b) => b.likes - a.likes)
     },
-    // appendBlogEntry(state, action) {
-    //   state.push(action.payload)
-    // },
+    appendBlogEntry(state, action) {
+      state.push(action.payload)
+    },
     updateBlogs(state, action) {
       const blog = action.payload
       return state.map((b) => (b.id === blog.id ? blog : b))
@@ -26,21 +26,6 @@ const blogSlice = createSlice({
 
 export const { setBlogs, updateBlogs, appendBlogEntry, deleteBlog } =
   blogSlice.actions
-
-// export const createBlogEntry = (newBlogEntry) => async (dispatch) => {
-//   try {
-//     dispatch({
-//       type: appendBlogEntry,
-//       data: await blogService.create(newBlogEntry),
-//     })
-
-//     dispatch(
-//       createNotification(`A new blog ${newBlogEntry.title} created`, 'info', 5)
-//     )
-//   } catch (error) {
-//     dispatch(createNotification(error.message, 'alert', 5))
-//   }
-// }
 
 export const createBlogEntry = (newBlogEntry) => {
   return async (dispatch) => {
@@ -57,27 +42,7 @@ export const createBlogEntry = (newBlogEntry) => {
   }
 }
 
-// export const deleteBlogEntry = (blogEntry) => async (dispatch) => {
-//   try {
-//     await blogService.remove(blogEntry.id)
-//     dispatch({
-//       type: deleteBlog,
-//       data: blogEntry,
-//     })
-//     dispatch(createNotification('Blog removed', 'info', 5))
-//   } catch (error) {
-//     dispatch(
-//       createNotification(
-//         `Removing blog, an error occured: ${error.message}`,
-//         'alert',
-//         5
-//       )
-//     )
-//   }
-// }
-
 export const deleteBlogEntry = (blogEntry) => {
-  // console.log(`running 'deleteBlogEntry': ${blogEntry.title}, ${blogEntry.id}`)
   return async (dispatch) => {
     await blogService.remove(blogEntry.id)
     dispatch(deleteBlog(blogEntry))
@@ -86,10 +51,7 @@ export const deleteBlogEntry = (blogEntry) => {
 }
 
 export const addLike = (blog) => {
-  // console.log(`liking blog ${blog.title}`)
   return async (dispatch) => {
-    // const updatedBlog = await blogService.update(blog.id, blog)
-    // dispatch(updateBlogs(updatedBlog))
     await blogService.update(blog.id, blog)
     const getAllBlogs = await blogService.getAll()
     dispatch(setBlogs(getAllBlogs))

@@ -1,12 +1,12 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useRef } from 'react'
-// import Blog from '../components/Blog'
+
 import BlogForm from '../components/BlogForm'
 import Togglable from '../components/Togglable'
 import Notification from '../components/Notification'
 import LoginForm from '../components/LoginForm'
-// import LogoutButton from '../components/LogoutButton'
+
 import { Link } from 'react-router-dom'
 
 import { Table } from 'react-bootstrap'
@@ -14,7 +14,6 @@ import { Table } from 'react-bootstrap'
 const BlogView = () => {
   const blogs = useSelector((state) => state.blog)
   const user = useSelector((state) => state.user)
-  // console.log(blogs)
 
   const blogFormRef = useRef()
 
@@ -31,7 +30,7 @@ const BlogView = () => {
       ) : (
         <div>
           <p>{user.name} logged in</p>
-          {/* <LogoutButton /> */}
+
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm />
           </Togglable>

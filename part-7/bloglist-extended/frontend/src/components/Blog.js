@@ -1,11 +1,14 @@
-// import PropTypes from 'prop-types'
-// import { connect } from 'react-redux'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteBlogEntry, addLike } from '../reducers/blogReducer'
+import { useNavigate } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 const Blog = ({ blog }) => {
+  if (!blog) {
+    return <div>No blog to display</div>
+  }
   const dispatch = useDispatch()
+  const navigator = useNavigate()
   const currentUser = useSelector((state) => state.user)
 
   const blogStyle = {
@@ -15,17 +18,6 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5,
     padding: '4px',
-  }
-
-  const removeButtonStyle = {
-    backgroundColor: '#f44336',
-    cursor: 'pointer',
-    color: 'white',
-    textAlign: 'center',
-    padding: '5px',
-    textDecoration: 'none',
-    display: 'inline-block',
-    borderRadius: '4px',
   }
 
   const addVote = () => {
@@ -39,6 +31,7 @@ const Blog = ({ blog }) => {
       )
     ) {
       dispatch(deleteBlogEntry(blog))
+      navigator('/')
     }
   }
 
@@ -47,12 +40,16 @@ const Blog = ({ blog }) => {
       return (
         <div className="blog">
           <br></br>
-          <button style={removeButtonStyle} onClick={removeBlog}>
+          <Button variant="danger" onClick={removeBlog}>
             remove
-          </button>
+          </Button>
         </div>
       )
     }
+  }
+
+  const handleClick = () => {
+    navigator(-1)
   }
 
   return (
@@ -68,16 +65,12 @@ const Blog = ({ blog }) => {
       Likes {blog.likes} <button onClick={addVote}>like</button> <br></br>
       {blog.user.name}
       <ShowRemoveButton />
+      <br />
+      <Button variant="primary" onClick={handleClick}>
+        Back
+      </Button>
     </div>
   )
 }
 
-// Blog.propTypes = {
-//   blog: PropTypes.object.isRequired,
-//   handleAddLike: PropTypes.func.isRequired,
-//   handleRemoveBlog: PropTypes.func.isRequired,
-//   currentUser: PropTypes.object.isRequired,
-// }
-
 export default Blog
-// export default connect(null, { deleteBlogEntry })(Blog)

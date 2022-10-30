@@ -21,7 +21,6 @@ const App = () => {
   const users = useSelector((state) => state.users)
   const blogs = useSelector((state) => state.blog)
   const loggedUser = useSelector((state) => state.user)
-  // console.log(`Logged user: ${loggedUser}`)
 
   const match = useMatch('/users/:id')
   const blogMatch = useMatch('/blogs/:id')
