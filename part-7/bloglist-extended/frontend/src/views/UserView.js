@@ -2,7 +2,7 @@ import React from 'react'
 import Togglable from '../components/Togglable'
 import LoginForm from '../components/LoginForm'
 import LogoutButton from '../components/LogoutButton'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { initializeAllUsers } from '../reducers/allUsersReducer'
 import { Link } from 'react-router-dom'
@@ -13,17 +13,17 @@ const UserView = ({ users }) => {
     dispatch(initializeAllUsers())
   }, [dispatch])
 
-  const user = useSelector((state) => state.user)
+  // const user = useSelector((state) => state.user)
 
   // const match = useMatch('/users/:id')
   // const user = match
   //   ? users.find(user => user.id === Number(match.params.id))
   //   : null
 
-  if (user) {
-    console.log(`Logged in user: ${user.username}`)
-    console.log(`All users: ${users}`)
-  }
+  // if (user) {
+  //   console.log(`Logged in user: ${user.username}`)
+  //   console.log(`All users: ${users}`)
+  // }
   return (
     <div>
       {users === null ? (

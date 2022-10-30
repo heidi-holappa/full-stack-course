@@ -14,12 +14,14 @@ import { initializeUser } from './reducers/userReducer'
 import { initializeAllUsers } from './reducers/allUsersReducer'
 import LogoutButton from './components/LogoutButton'
 
+import { Navbar, Nav } from 'react-bootstrap'
+
 const App = () => {
   const dispatch = useDispatch()
   const users = useSelector((state) => state.users)
   const blogs = useSelector((state) => state.blog)
   const loggedUser = useSelector((state) => state.user)
-  console.log(`Logged user: ${loggedUser}`)
+  // console.log(`Logged user: ${loggedUser}`)
 
   const match = useMatch('/users/:id')
   const blogMatch = useMatch('/blogs/:id')
@@ -45,26 +47,37 @@ const App = () => {
   }
 
   return (
-    <div>
-      <div>
-        <Link style={padding} to="/">
-          Home
-        </Link>
-        <Link style={padding} to="/users">
-          Users
-        </Link>
-        <Link style={padding} to="/about">
-          About
-        </Link>
-        {loggedUser ? (
-          <Link style={padding} to="/">
-            <em>{loggedUser.name} logged in</em>
-            <LogoutButton />
-          </Link>
-        ) : (
-          console.log('no user')
-        )}
-      </div>
+    <div className="container">
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/">
+                Home
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/users">
+                Users
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              <Link style={padding} to="/about">
+                About
+              </Link>
+            </Nav.Link>
+            <Nav.Link href="#" as="span">
+              {loggedUser && (
+                <Link style={padding} to="/">
+                  <em>{loggedUser.name} logged in</em>
+                  <LogoutButton />
+                </Link>
+              )}
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
 
       <Routes>
         <Route path="/" element={<BlogView />} />

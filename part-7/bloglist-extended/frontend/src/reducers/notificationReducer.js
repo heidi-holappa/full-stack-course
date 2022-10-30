@@ -16,7 +16,7 @@ let timeoutId = null
 
 export const createNotification = (notification, type, time) => {
   return (dispatch) => {
-    dispatch(setNotification(notification, type))
+    dispatch(setNotification({ notification, type }))
 
     if (timeoutId) {
       clearTimeout(timeoutId)

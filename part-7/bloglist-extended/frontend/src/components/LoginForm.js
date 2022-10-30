@@ -1,6 +1,7 @@
 // import PropTypes from 'prop-types'
 import { login } from '../reducers/userReducer'
 import { useDispatch } from 'react-redux'
+import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
   const dispatch = useDispatch()
@@ -14,19 +15,25 @@ const LoginForm = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <div>
-          username
-          <input type="text" id="username" name="Username" />
-        </div>
-        <div>
-          password
-          <input type="password" id="password" name="Password" />
-        </div>
-        <button id="login-button" type="submit">
-          login
-        </button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
+            type="text"
+            id="username"
+            name="Username"
+          ></Form.Control>
+          <Form.Label>password:</Form.Label>
+          <Form.Control
+            type="password"
+            id="password"
+            name="Password"
+          ></Form.Control>
+          <Button id="login-button" type="submit">
+            login
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }

@@ -1,8 +1,8 @@
 const User = ({ user }) => {
   const blogs = user.blogs
-  if (blogs) {
-    console.log(blogs)
-  }
+  // if (blogs) {
+  //   console.log(blogs)
+  // }
   return (
     <div>
       <h2>Selected user</h2>

@@ -6,13 +6,15 @@ import BlogForm from '../components/BlogForm'
 import Togglable from '../components/Togglable'
 import Notification from '../components/Notification'
 import LoginForm from '../components/LoginForm'
-import LogoutButton from '../components/LogoutButton'
+// import LogoutButton from '../components/LogoutButton'
 import { Link } from 'react-router-dom'
+
+import { Table } from 'react-bootstrap'
 
 const BlogView = () => {
   const blogs = useSelector((state) => state.blog)
   const user = useSelector((state) => state.user)
-  console.log(blogs)
+  // console.log(blogs)
 
   const blogFormRef = useRef()
 
@@ -29,20 +31,25 @@ const BlogView = () => {
       ) : (
         <div>
           <p>{user.name} logged in</p>
-          <LogoutButton />
+          {/* <LogoutButton /> */}
           <Togglable buttonLabel="create new blog" ref={blogFormRef}>
             <BlogForm />
           </Togglable>
           <h2>Blogs</h2>
-          {/* {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))} */}
-          {blogs.map((blog) => (
-            <Link key={blog.id} to={`/blogs/${blog.id}`}>
-              {blog.title} by {blog.author}
-              <br />
-            </Link>
-          ))}
+          <Table striped>
+            <tbody>
+              {blogs.map((blog) => (
+                <tr key={blog.id}>
+                  <td>
+                    <Link to={`/blogs/${blog.id}`}>
+                      {blog.title} by {blog.author}
+                      <br />
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
         </div>
       )}
     </div>

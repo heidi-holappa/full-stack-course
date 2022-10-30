@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import loginService from '../services/login'
 import userService from '../services/user'
+import { createNotification } from './notificationReducer'
 
 const userSlice = createSlice({
   name: 'user',
@@ -21,9 +22,15 @@ export const login = (content) => {
       const userInfo = await loginService.login(content)
       userService.setUser(userInfo)
       dispatch(loggedInUser(userInfo))
-      console.log(`login successful, token: ${userService.getToken()}`)
+      dispatch(
+        createNotification(
+          `Login successful. Welcome, ${userInfo.name}!`,
+          'info',
+          5
+        )
+      )
     } catch (error) {
-      console.log(`login failed: ${error}`)
+      dispatch(createNotification('Login failed. Try again.', 'alert', 5))
     }
   }
 }
